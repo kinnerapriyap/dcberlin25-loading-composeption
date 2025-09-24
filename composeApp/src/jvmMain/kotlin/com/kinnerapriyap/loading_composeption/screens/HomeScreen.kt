@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,20 +28,7 @@ fun HomeScreen(
     onViewScenarios: () -> Unit,
     onConclusions: () -> Unit,
 ) {
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(
-                            text = "Loading... Please Wait",
-                            style = MaterialTheme.typography.headlineLarge,
-                        )
-                    }
-                },
-            )
-        }
-    ) { inner ->
+    Scaffold { inner ->
         HomeContent(inner, onViewScenarios, onConclusions)
     }
 }
@@ -57,10 +47,15 @@ private fun HomeContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.padding(12.dp))
+        Text(
+            text = "Loading... Please Wait",
+            style = MaterialTheme.typography.headlineLarge,
+        )
+        Spacer(Modifier.padding(32.dp))
         FilledTonalButton(
             onClick = onViewScenarios,
-            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp)
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
+            colors = ButtonDefaults.buttonColors()
         ) {
             Text(
                 text = "View Scenarios",
@@ -68,10 +63,11 @@ private fun HomeContent(
                 style = MaterialTheme.typography.titleLarge,
             )
         }
-        Spacer(Modifier.padding(12.dp))
+        Spacer(Modifier.padding(16.dp))
         FilledTonalButton(
             onClick = onConclusions,
-            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp)
+            contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
+            colors = ButtonDefaults.elevatedButtonColors()
         ) {
             Text(
                 text = "Conclusions",
@@ -79,7 +75,6 @@ private fun HomeContent(
                 style = MaterialTheme.typography.titleLarge,
             )
         }
-        Spacer(Modifier.padding(12.dp))
     }
 }
 

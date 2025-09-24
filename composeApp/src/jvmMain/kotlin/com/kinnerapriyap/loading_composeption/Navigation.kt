@@ -39,24 +39,7 @@ sealed interface Screen {
 
 @Composable
 fun AppNavHost(navController: NavHostController = rememberNavController()) {
-    NavHost(
-        navController = navController,
-        startDestination = Screen.Home,
-        enterTransition = {
-            fadeIn(animationSpec = tween(180)) + slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Left,
-                tween(180)
-            )
-        },
-        exitTransition = { fadeOut(animationSpec = tween(180)) },
-        popEnterTransition = { fadeIn(animationSpec = tween(180)) },
-        popExitTransition = {
-            fadeOut(animationSpec = tween(180)) + slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Right,
-                tween(180)
-            )
-        }
-    ) {
+    NavHost(navController = navController, startDestination = Screen.Home) {
         composable<Screen.Home> {
             HomeScreen(
                 onViewScenarios = { navController.navigate(Screen.Scenarios) },
