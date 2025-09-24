@@ -21,7 +21,6 @@ import com.kinnerapriyap.loading_composeption.screens.ScenarioDetailScreen
 import com.kinnerapriyap.loading_composeption.screens.ScenarioListScreen
 import kotlinx.serialization.Serializable
 import kotlin.reflect.typeOf
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 sealed interface Screen {
