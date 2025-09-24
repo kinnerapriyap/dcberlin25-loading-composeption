@@ -5,19 +5,24 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import androidx.navigation.toRoute
+import androidx.savedstate.SavedState
+import androidx.savedstate.read
+import androidx.savedstate.write
 import com.kinnerapriyap.loading_composeption.screens.ConclusionsScreen
 import com.kinnerapriyap.loading_composeption.screens.HomeScreen
+import com.kinnerapriyap.loading_composeption.screens.Scenario
 import com.kinnerapriyap.loading_composeption.screens.ScenarioDetailScreen
 import com.kinnerapriyap.loading_composeption.screens.ScenarioListScreen
 import kotlinx.serialization.Serializable
+import kotlin.reflect.typeOf
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 sealed interface Screen {
     @Serializable
@@ -27,7 +32,7 @@ sealed interface Screen {
     object Scenarios : Screen
 
     @Serializable
-    data class ScenarioDetail(val id: String) : Screen
+    data class ScenarioDetail(val scenario: Scenario) : Screen
 
     @Serializable
     object Conclusions : Screen
@@ -62,13 +67,15 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         composable<Screen.Scenarios> {
             ScenarioListScreen(
                 onBack = { navController.popBackStack() },
-                onScenarioSelected = { id -> navController.navigate(Screen.ScenarioDetail(id)) }
+                onScenarioSelected = { scenario -> navController.navigate(Screen.ScenarioDetail(scenario)) }
             )
         }
-        composable<Screen.ScenarioDetail> { entry ->
+        composable<Screen.ScenarioDetail>(
+            typeMap = mapOf(typeOf<Scenario>() to ScenarioParameterType)
+        ) { entry ->
             val args = entry.toRoute<Screen.ScenarioDetail>()
             ScenarioDetailScreen(
-                scenarioName = args.id,
+                scenario = args.scenario,
                 onBack = { navController.popBackStack() }
             )
         }
@@ -78,3 +85,21 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
     }
 }
 
+internal val ScenarioParameterType = object : NavType<Scenario>(isNullableAllowed = false) {
+    override fun put(
+        bundle: SavedState,
+        key: String,
+        value: Scenario
+    ) {
+        bundle.write { putString(key, serializeAsValue(value)) }
+    }
+
+    override fun get(
+        bundle: SavedState,
+        key: String
+    ): Scenario = bundle.read { parseValue(getString(key)) }
+
+    override fun parseValue(value: String): Scenario = Json.decodeFromString(value)
+
+    override fun serializeAsValue(value: Scenario): String = Json.encodeToString(value)
+}

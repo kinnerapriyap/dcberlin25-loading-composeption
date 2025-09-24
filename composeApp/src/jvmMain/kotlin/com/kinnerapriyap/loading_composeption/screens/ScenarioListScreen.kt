@@ -24,19 +24,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+enum class Scenario(val text: String) {
+    NETWORK_REQUEST("The Network Request"),
+    LAZY_LIST("The Lazy List"),
+    SKELETON("The Skeleton"),
+    STATE_TRANSITION("The State Transition"),
+    EXTRA("The Extras")
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScenarioListScreen(
     onBack: () -> Unit,
-    onScenarioSelected: (String) -> Unit,
+    onScenarioSelected: (Scenario) -> Unit,
 ) {
-    val scenarios = listOf(
-        "Network Request",
-        "Lazy List Placeholders",
-        "Skeleton Screens",
-        "State Transitions",
-        "The Quirk",
-    )
 
     Scaffold(
         topBar = {
@@ -57,15 +58,15 @@ fun ScenarioListScreen(
             )
         }
     ) { inner ->
-        ScenarioListContent(inner, scenarios, onScenarioSelected)
+        ScenarioListContent(inner, Scenario.entries.toList(), onScenarioSelected)
     }
 }
 
 @Composable
 private fun ScenarioListContent(
     innerPadding: PaddingValues,
-    scenarios: List<String>,
-    onScenarioSelected: (String) -> Unit,
+    scenarios: List<Scenario>,
+    onScenarioSelected: (Scenario) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -77,10 +78,15 @@ private fun ScenarioListContent(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            items(scenarios) { item ->
+            items(scenarios) { scenario ->
                 ListItem(
-                    headlineContent = { Text(item, style = MaterialTheme.typography.titleLarge) },
-                    modifier = Modifier.clickable { onScenarioSelected(item) }
+                    headlineContent = {
+                        Text(
+                            text = scenario.text,
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    },
+                    modifier = Modifier.clickable { onScenarioSelected(scenario) }
                 )
             }
         }
